@@ -11,9 +11,6 @@ class App extends Component {
       <div className="App">
         <ul>
           <li>
-            <Link to="/dashboard">Dashboard</Link>
-          </li>
-          <li>
             <Link to="/pivot-table">Pivot Table</Link>
           </li>
         </ul>

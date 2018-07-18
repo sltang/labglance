@@ -73,7 +73,7 @@ class MyPivotTable extends Component {
                         pivotData.forEachMatchingRecord(filters, function(
                             record
                         ) {
-                            names.push(record.machinename);
+                            names.push(JSON.stringify(record));
                         });
                         alert(names.join('\n'));
                     },
@@ -82,41 +82,41 @@ class MyPivotTable extends Component {
         });
     }
 
-    onDrop(files) {
-        this.setState(
-            {
-                mode: 'thinking',
-                filename: '(Parsing CSV...)',
-                textarea: '',
-                pivotState: {data: []},
-            },
-            () =>
-                Papa.parse(files[0], {
-                    skipEmptyLines: true,
-                    error: e => alert(e),
-                    complete: parsed =>
-                        this.setState({
-                            mode: 'file',
-                            filename: files[0].name,
-                            pivotState: {data: parsed.data},
-                        }),
-                })
-        );
-    }
+    // onDrop(files) {
+    //     this.setState(
+    //         {
+    //             mode: 'thinking',
+    //             filename: '(Parsing CSV...)',
+    //             textarea: '',
+    //             pivotState: {data: []},
+    //         },
+    //         () =>
+    //             Papa.parse(files[0], {
+    //                 skipEmptyLines: true,
+    //                 error: e => alert(e),
+    //                 complete: parsed =>
+    //                     this.setState({
+    //                         mode: 'file',
+    //                         filename: files[0].name,
+    //                         pivotState: {data: parsed.data},
+    //                     }),
+    //             })
+    //     );
+    // }
 
-    onType(event) {
-        Papa.parse(event.target.value, {
-            skipEmptyLines: true,
-            error: e => alert(e),
-            complete: parsed =>
-                this.setState({
-                    mode: 'text',
-                    filename: 'Data from <textarea>',
-                    textarea: event.target.value,
-                    pivotState: {data: parsed.data},
-                }),
-        });
-    }
+    // onType(event) {
+    //     Papa.parse(event.target.value, {
+    //         skipEmptyLines: true,
+    //         error: e => alert(e),
+    //         complete: parsed =>
+    //             this.setState({
+    //                 mode: 'text',
+    //                 filename: 'Data from <textarea>',
+    //                 textarea: event.target.value,
+    //                 pivotState: {data: parsed.data},
+    //             }),
+    //     });
+    // }
 
     handleSelectChange = event => {        
         let view = event.target.value        
@@ -151,7 +151,7 @@ class MyPivotTable extends Component {
                                 pivotData.forEachMatchingRecord(filters, function(
                                     record
                                 ) {
-                                    names.push(record.machinename);
+                                    names.push(JSON.stringify(record));
                                 });
                                 alert(names.join('\n'));
                             },
@@ -187,7 +187,7 @@ class MyPivotTable extends Component {
                                 pivotData.forEachMatchingRecord(filters, function(
                                     record
                                 ) {
-                                    names.push(record.controller);
+                                    names.push(JSON.stringify(record));
                                 });
                                 alert(names.join('\n'));
                             },
