@@ -15,6 +15,8 @@ const styles = theme =>  ({
     },
     card: {
         maxWidth: 220,
+        height: '260px',
+        marginTop:'10px'
     },
 
 })
@@ -29,18 +31,14 @@ class Instrument extends Component {
         }
     }
 
-    componentDidUpdate(nextProps) {
-        //console.log(nextProps);
-    }
-
     render() {
-        const { classes, data } = this.props;
+        const { classes, deviceId, data, handleClose } = this.props;
         //const { data } = this.state;//do not use state
         //console.log(data);
         return (
             <Card className={classes.card}>
                 <CardContent>
-                    <Workload data={data}/>
+                    <Workload deviceId={deviceId} data={data} handleClose={handleClose}/>
                     <Gauge data={data} />
                 </CardContent>
             </Card>

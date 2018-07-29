@@ -1,5 +1,3 @@
-import fs from 'fs';
-
 const collectionNames = ['OLCDSDA_Session',
    'OLCDSDA_Topology',
     'OLCDSDA_Performance',
@@ -16,27 +14,123 @@ let data
 let collections
 let machineTable = []
 let machinePivotTable = []
-let instrumentPivotTable = []
 
-const parseData = () => {
-    let raw = fs.readFileSync('analytics.json', 'UTF-8')
+/*
+parse analytics.json
+*/
+export const parseData = (raw) => {
     raw = '[' + raw.replace(/(.*)\r\n/g, '$1,')
     raw = raw.replace(/(.*),$/, '$1')
     raw += ']'
-
     data = JSON.parse(raw);
-    return data;
+    return collections = groupByCollection(data, "CollectionName")
 }
 
-const getCollections = () => {
-    parseData()
-    collections = groupByCollection(data, "CollectionName")
-    return collections
+export const getServers = (collections) => {
+    if (collections === undefined) {
+        console.log("collections is undefined")
+        return []
+    }
+    let olsshostnames = groupBy(collections['OLCDSINST_Topology'], "olsshostname")
+    let servers = []
+
+    Object.keys(olsshostnames).forEach(olsshostname => {
+        let server = olsshostnames[olsshostname];        
+        server.sort((r1, r2) => {
+            if (r1.timestampatorigin === r2.timestampatorigin) return 0;
+            return r1.timestampatorigin < r2.timestampatorigin ? -1 : 1;
+        });
+        servers.push(server[0])
+    })
+    return servers;
 }
 
-export const getMachinePivotTable = () => {
+export const getControllers = (collections) => {
+    if (collections === undefined) {
+        console.log("collections is undefined")
+        return {}
+    }
+    let crtls = {}
+    let controllers = groupBy(collections['OLCDSINST_Instrument'], "controller")
+    
+    Object.keys(controllers).forEach(controller => {
+        let instruments = groupBy(controllers[controller], "name")
+        Object.keys(instruments).forEach( name => {
+            let instrument = instruments[name].sort((r1, r2) => {
+                if (r1.timestampatorigin === r2.timestampatorigin) return 0;
+                return r1.timestampatorigin < r2.timestampatorigin ? -1 : 1;
+            })[0];
+            if (crtls[controller] === undefined) {
+                crtls[controller] = [];
+            } 
+            crtls[controller].push(instrument)    
+        })
+    })
+    return crtls
+}
+
+export const getComputers = (collections) => {
+    if (collections === undefined) {
+        console.log("collections is undefined")
+        return []
+    }
+    let computers = []
+    let machines = groupBy(collections['OLCDSACQ_Session'], "machinename");
+    Object.keys(machines).forEach(machineName => {
+        let machine = machines[machineName];
+        machine.sort((r1, r2) => {
+            if (r1.sessionstarttime === r2.sessionstarttime) return 0;
+            return r1.sessionstarttime < r2.sessionstarttime ? 1 : -1;
+        });
+        computers.push(machine[0])
+    })
+    let instprocs = groupBy(collections['OLCDSINST_Session'], "machinename");//OpenLAB CDS Instrument Process
+    Object.keys(instprocs).filter(machineName => Object.keys(machines).indexOf(machineName) === -1).forEach(machineName => {
+        let machine = instprocs[machineName];
+        machine.sort((r1, r2) => {
+            if (r1.sessionstarttime === r2.sessionstarttime) return 0;
+            return r1.sessionstarttime < r2.sessionstarttime ? 1 : -1;
+        });
+        computers.push(machine[0])
+    })
+    return computers
+
+}
+
+export const getDataAcquistionSoftware = (collections) => {
+    let das = groupBy(collections['OLCDSDA_Session'], "appversion")
+    let da = []
+    Object.keys(das).forEach(appversion => {
+        let version = das[appversion]
+        version.sort((r1, r2) => {
+            if (r1.sessionstarttime === r2.sessionstarttime) return 0;
+            return r1.sessionstarttime < r2.sessionstarttime ? 1 : -1;
+        });
+        da.push({
+            applongname:'Agilent OpenLAB CDS Data Analysis', 
+            appversion:version[0].appversion
+        })
+    })
+    return da
+}
+
+export const getInstruments = (controllers) => {
+    let instruments = []
+    Object.keys(controllers).forEach(controller => {
+        let insts = controllers[controller]
+        insts.forEach(inst => {
+            instruments.push({
+                name: inst.name,
+                driver: inst.driver,
+                controller: controller.toUpperCase(),
+            })
+        })
+    })
+    return instruments
+}
+
+export const getMachinePivotTable = (collections) => {
     if (machinePivotTable.length === 0) {
-        getCollections()
         //get PC details from OLCDSDA_Session 
         let das = groupBy(collections['OLCDSDA_Session'], "machinename")
         let pcDetails = groupBy(collections['OLCDSACQ_Session'], "machinename");
@@ -112,79 +206,19 @@ export const getMachinePivotTable = () => {
     }
     return machinePivotTable;
 }
-// let instrumentTable = [];
 
-// let numModules = 0;
-
-// Object.keys(collections).forEach(col => {
-//     let collectionData = collections[col];
-//     let instrumentDataByCollection =  groupBy(collectionData, "controller"); //only OLCDSINST_Instrument collection is needed
-//     Object.keys(instrumentDataByCollection).forEach(controllerName => {
-        
-//         let controllerData = instrumentDataByCollection[controllerName];
-//         let controllerDataGroupbyName = groupBy(controllerData, "name")
-
-//         Object.keys(controllerDataGroupbyName).forEach(name => {
-            
-//             controllerDataGroupbyName[name].sort((r1, r2) => {
-//                 if (r1.timestampatorigin === r2.timestampatorigin) return 0;
-//                 return r1.timestampatorigin < r2.timestampatorigin ? 1 : -1;
-//             });
-//             if (col === 'OLCDSACQ_Instrument') {
-//                 let instrument = controllerDataGroupbyName[name][0];
-//                 if (instrument.modules.length > numModules) {
-//                     numModules = instrument.modules.length
-//                 }
-//                 let moduleNames = instrument.modules.map(m => m.Properties.name)
-//                 let moduleProps = instrument.modules[0].Properties
-//                 let instrumentDetails = {controller:controllerName, name:name, driver:instrument.driver, id:instrument.id, project:instrument.project, 
-//                     projectpath:instrument.projectpath, partno: moduleProps.partno, serialno:moduleProps.serialno, firmwareversion:moduleProps.firmwareversion,
-//                     driverversion:'', modules:moduleNames, connectioninfo:moduleProps.connectioninfo};
-//                 instrumentTable.push(instrumentDetails)
-//             }
-//         })
-//         instrumentTable.forEach(instrumentDetails => {            
-//             let modules = instrumentDetails.modules
-//             for (let i=0;i < numModules;i++ ) {                
-//                 if (i < modules.length) {
-//                     instrumentDetails['module.' + i] = modules[i]                    
-//                 } else {
-//                     instrumentDetails['module.' + i] = ''
-//                 }                
-//             }
-//         })
-//     })
-
-// })
-
-// instrumentTable.forEach(instrumentDetails => {
-//     delete instrumentDetails.modules
-//     instrumentPivotTable.push(Object.values(instrumentDetails))
-// })
-
-// instrumentPivotTable.splice(0, 0, Object.keys(instrumentTable[0]))
-
-//console.log(instrumentPivotTable[0])
-//console.log(instrumentPivotTable[1])
-
-
-
-
-//console.log(machinePivotTable[0]);
-//console.log(machinePivotTable[1]);
-
-function groupBy(objectArray, property) {// a list of property parameters
+/*
+group array elements by property
+*/
+function groupBy(objectArray, property) {
     return objectArray.reduce(function (acc, obj) {
-        //properties.forEach(property => {
-            if (obj.hasOwnProperty(property)) {
-                var key = obj[property];
-                if (!acc[key]) {
-                    acc[key] = [];
-                }
-                acc[key].push(obj);
-            }      
-            
-       // })
+        if (obj.hasOwnProperty(property)) {
+            var key = obj[property];
+            if (!acc[key]) {
+                acc[key] = [];
+            }
+            acc[key].push(obj);
+        }      
         return acc;
     }, {});
 }
@@ -202,5 +236,3 @@ function groupByCollection(objectArray, property) {
     }, {});
 }
 
-//export const machinePivotTable;
-//export const instrumentPivotTable;

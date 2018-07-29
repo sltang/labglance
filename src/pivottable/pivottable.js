@@ -1,7 +1,7 @@
 import React, { Component, PureComponent } from 'react';
 import TableRenderers from 'react-pivottable/TableRenderers';
 import PivotTableUI from 'react-pivottable/PivotTableUI';
-import Papa from 'papaparse';
+//import Papa from 'papaparse';
 import './pivottable.css';
 import machinedata from './machinedata'
 import instrumentdata from './instrumentdata'

@@ -1,0 +1,78 @@
+@font-face {
+    font-family: "Agilent TT Cond";
+    src: url(AgC.5a47d512375047bc309c.eot);
+    src: url(AgC.5a47d512375047bc309c.eot?#iefix) format("embedded-opentype"),url(AgilentCondTT-Regular.5fd6393036b0bccbca5f.woff) format("woff"),url(AgC.9d01c2a2afb7e853755a.ttf) format("truetype"),url(AgilentCondTT-Regular.587543e657b327d177d7.svg) format("svg");
+    font-weight: 400;
+    font-style: normal
+}
+
+@font-face {
+    font-family: "Agilent TT Cond Bold";
+    src: url(AgCBd.9bff97ecff2a4d4b6c28.eot);
+    src: url(AgCBd.9bff97ecff2a4d4b6c28.eot?#iefix) format("embedded-opentype"),url(AgilentCondTT-Bold.de186e499570a10e74ce.woff) format("woff"),url(AgCBd.a08291e4cd7366723261.ttf) format("truetype"),url(AgilentCondTT-Bold.948af4a895173434b525.svg) format("svg");
+    font-weight: 700;
+    font-style: normal
+}
+
+@font-face {
+    font-family: 'Noto Sans';
+    src: url(NotoSans-Regular.327e30c20b77c3d422c2.eot);
+    src: local("Noto Sans Regular"),local("NotoSans-Regular"),url(NotoSans-Regular.327e30c20b77c3d422c2.eot?#iefix) format("embedded-opentype"),url(NotoSans-Regular.e50c34178d20d5fa4ab3.woff2) format("woff2"),url(NotoSans-Regular.0695760218a052feda99.woff) format("woff"),url(NotoSans-Regular.21f6235482ecdf67217d.ttf) format("truetype"),url(NotoSans-Regular.defc5654707b76ec799f.svg#NotoSans-Regular) format("svg");
+    font-weight: 400;
+    font-style: normal
+}
+
+@font-face {
+    font-family: 'Noto Sans';
+    src: url(NotoSans-Bold.2ebcb523dec0ce7b98d0.eot);
+    src: local("Noto Sans Bold"),local("NotoSans-Bold"),url(NotoSans-Bold.2ebcb523dec0ce7b98d0.eot?#iefix) format("embedded-opentype"),url(NotoSans-Bold.b85bf848c28799f5ad34.woff2) format("woff2"),url(NotoSans-Bold.c5802f2add9b067f419c.woff) format("woff"),url(NotoSans-Bold.6a1f7cfe6252b44b6ea1.ttf) format("truetype"),url(NotoSans-Bold.0bb8618705a2f1da36b2.svg#NotoSans-Bold) format("svg");
+    font-weight: 700;
+    font-style: standard
+}
+
+@font-face {
+    font-family: 'Noto Sans';
+    src: url(NotoSans-Italic.2ca6e82f8250c3d3d406.eot);
+    src: local("Noto Sans Italic"),local("NotoSans-Italic"),url(NotoSans-Italic.2ca6e82f8250c3d3d406.eot?#iefix) format("embedded-opentype"),url(NotoSans-Italic.0b0b9b2b7159c9bc6463.woff2) format("woff2"),url(NotoSans-Italic.669a7edd16f586e69dfc.woff) format("woff"),url(NotoSans-Italic.154da4697acc779b55af.ttf) format("truetype"),url(NotoSans-Italic.2bc1b9fd1cb6b08edf49.svg#NotoSans-Italic) format("svg");
+    font-weight: 400;
+    font-style: italic
+}
+
+@font-face {
+    font-family: 'Noto Sans';
+    src: url(NotoSans-BoldItalic.df692395d4040e085ef9.eot);
+    src: local("Noto Sans BoldItalic"),local("NotoSans-BoldItalic"),url(NotoSans-BoldItalic.df692395d4040e085ef9.eot?#iefix) format("embedded-opentype"),url(NotoSans-BoldItalic.5a241c76c24e463ef9bc.woff2) format("woff2"),url(NotoSans-BoldItalic.b825226429966b6a83ec.woff) format("woff"),url(NotoSans-BoldItalic.c55a24627ac4712e5fb9.ttf) format("truetype"),url(NotoSans-BoldItalic.83d4d626c601d257c60c.svg#NotoSans-BoldItalic) format("svg");
+    font-weight: 700;
+    font-style: italic
+}
+
+@font-face {
+    font-family: agilent_branding;
+    src: url(agilent_branding.21669d438886bb441d70.eot);
+    src: url(agilent_branding.21669d438886bb441d70.eot?#iefix) format("embedded-opentype"),url(agilent_branding.5616acfefe30d8986b2f.ttf) format("truetype");
+    font-weight: 400;
+    font-style: normal
+}
+
+.ol-logo-agilent-spark:before {
+    color: #0a81c5;
+    display: inline-block;
+    font-family: agilent_branding;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 1.75rem;
+    font-variant: normal;
+    line-height: 1;
+    text-decoration: inherit;
+    text-rendering: optimizeLegibility;
+    text-transform: none;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    content: "\f073";
+}
+
+/*
+html body {
+    background-color: #007bff;
+}
+*/

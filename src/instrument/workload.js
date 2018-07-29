@@ -38,10 +38,15 @@ class Workload extends Component {
     }
 
     render() {
-        const { classes, data } = this.props;
+        const { classes, deviceId, data, handleClose } = this.props;
         //const { workload } = this.state;//do not use state
+        //console.log(deviceId)
         return (
             <div className={classes.overview}>
+                <div style={{'backgroundColor':'#A9A9A9', 'display':'flex', 'justifyContent':'space-between'}}>
+                    <div>Agilent 7800</div>
+                    <div onClick={e => {handleClose(e, deviceId)}}>x</div>
+                </div>
                 <div className={classes.overviewHead}>Analysis Workload Overview</div>
                 <div className={classes.workloadContainer}>
                 {data.map((wl, index) => {
