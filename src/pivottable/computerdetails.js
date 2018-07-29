@@ -136,7 +136,7 @@ class ComputerDetails extends Component {
                 <div className={classes.container}>
                     {instruments && instruments.length > 0 ?
                     <Fragment>
-                        <Network width={400} height={330} graph={graph}/>
+                        <Network width={400} height={350} graph={graph}/>
                         <BaseTable zoom={'in'} columnNames={columnNames} data={instruments} handleRowClick={this.handleRowClick} cellWidths={instrumentTableCellWidths} headerCellWidth={['75%', '30%']} bodyCellWidth={['55%', '100%']}
                     /><br /></Fragment> :
                     ''}
