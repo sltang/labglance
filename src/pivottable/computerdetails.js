@@ -47,6 +47,7 @@ class ComputerDetails extends Component {
         if (machinename === undefined) return
         const computers = JSON.parse(sessionStorage.getItem('topology-view-computers'))
         //console.log(computers)
+        let title = ''
         let computer = computers.filter(comp => comp.machinename === machinename)
         if (computer.length > 0) {
             let comp = computer[0]
@@ -65,12 +66,21 @@ class ComputerDetails extends Component {
             //instruments
             const {instruments, graph} = this.getInstruments(machinename) 
             this.setState({data:data, instruments:instruments, graph:graph})
+            if (instruments.length > 0) {
+                title += 'Controller: '
+            } else {
+                title += 'Computer: '
+            }
         } 
         //servers  
         const server = this.getServer(machinename)
+        console.log(server)
         if (server.length > 0) {
             this.setState({server:server})
-        }  
+            title += 'Server: '
+        } 
+        title += machinename
+        this.setState({title: title})        
     }
 
     getArrayData = (key, arr) => {
@@ -129,14 +139,14 @@ class ComputerDetails extends Component {
 
     render() {
         const {classes } = this.props
-        const { data, instruments, server, graph } = this.state
-        console.log(server)
+        const { data, instruments, server, graph, title } = this.state
         if (data !== undefined) {
              return (
                 <div className={classes.container}>
+                    <div>{title}</div>
                     {instruments && instruments.length > 0 ?
                     <Fragment>
-                        <Network width={400} height={350} graph={graph}/>
+                        <Network width={450} height={350} graph={graph}/>
                         <BaseTable zoom={'in'} columnNames={columnNames} data={instruments} handleRowClick={this.handleRowClick} cellWidths={instrumentTableCellWidths} headerCellWidth={['75%', '30%']} bodyCellWidth={['55%', '100%']}
                     /><br /></Fragment> :
                     ''}
@@ -149,6 +159,7 @@ class ComputerDetails extends Component {
              ) 
         } else if (server !== undefined)  {
             return  <div className={classes.container}>
+            <div>{title}</div>
             <BaseTable zoom={'in'} columnNames={columnNames} data={server} handleRowClick={this.handleRowClick} cellWidths={serverTableCellWidths} headerCellWidth={['75%', '30%']} bodyCellWidth={['30%', '70%']}
             />
             </div>

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToApp';
+import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 import IconButton from '@material-ui/core/IconButton'
-import DashBoardOutlinedIcon from '@material-ui/icons/Dashboard'
+import DashBoardOutlinedIcon from '@material-ui/icons/DashboardOutlined'
+import DevicesOutlinedIcon from '@material-ui/icons/DevicesOutlined'
 import Tooltip from '@material-ui/core/Tooltip';
 
 const styles = theme => ({
@@ -28,6 +29,11 @@ class AppBar extends Component {
         const { classes, handleLogout, gotoDevices, gotoTopology } = this.props
         return (
             <div className={classes.appbar}>
+                <Tooltip title="Instrument Dashboard">
+                    <IconButton onClick={gotoDevices} style={{ 'outline': 'none' }}>
+                        <DevicesOutlinedIcon className={classes.icon} />
+                    </IconButton>
+                </Tooltip>
                 <Tooltip title="Topology Viewer">
                     <IconButton onClick={gotoTopology} style={{ 'outline': 'none' }} >
                         <DashBoardOutlinedIcon className={classes.icon} />

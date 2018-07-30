@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { Route, withRouter, Switch } from 'react-router-dom';
 import AppBar from './appbar'
 import InstrumentDashboard from '../instrument/dashboard';
-import GridLayout from '../pivottable/gridblock'
+import TopologyViewer from '../pivottable/topologyviewer'
 import ComputerDetails from '../pivottable/computerdetails'
 
 const styles = theme => ({
@@ -34,7 +34,7 @@ class MainLayout extends Component {
                 <AppBar handleLogout={handleLogout} gotoTopology={this.gotoTopology} gotoDevices={this.gotoDevices}/>
                 <Switch>               
                     <Route exact path="/dashboard" component={InstrumentDashboard} />
-                    <Route exact path="/topology-view" component={GridLayout} />
+                    <Route exact path="/topology-view" component={TopologyViewer} />
                     <Route exact path="/computer-details/:name" component={ComputerDetails} />
                 </Switch>
             </div>

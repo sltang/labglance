@@ -7,6 +7,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
+import RefreshdOutlinedIcon from '@material-ui/icons/RefreshOutlined'
+import { IconButton } from '@material-ui/core';
 
 const styles = theme => ({
     root: {
@@ -34,6 +36,9 @@ const styles = theme => ({
     tableCell:{
         width:'100%'
     },
+    refreshIcon: {
+        width:'20px',height:'20px', outline:'none'
+    },
 })
 
 class BaseTable extends Component {
@@ -42,7 +47,8 @@ class BaseTable extends Component {
         super(props);
         this.state = {
             order:'asc', 
-            orderBy:''
+            orderBy:'',
+            originalData:this.props.data.slice(0)
         };
     }
 
@@ -80,17 +86,19 @@ class BaseTable extends Component {
         const { zoom, cellWidths } = this.props
         return {width:cellWidths.body[zoom][index]}
     }
+
+    handleRefresh = (event) =>  {
+        this.setState({orderBy:''})
+    }
     
 
     render() {
         const { classes, columnNames, data, handleRowClick, zoom} = this.props   
-        const { order } = this.state
-        let orderBy = '' 
-        if (this.state.orderBy) {
-            orderBy = this.state.orderBy
-        } else if (this.props.orderBy) {
+        const { order, originalData } = this.state
+        let orderBy = this.state.orderBy        
+        if (this.props.orderBy) {
             orderBy = this.props.orderBy
-        }
+        }       
         return (
             <div className={classes.container}>
             <Table>
@@ -105,7 +113,7 @@ class BaseTable extends Component {
                                 onClick={e => this.handleRequestSort(e, column.id)}
                             >
                                 {column.label}
-                            </TableSortLabel>                            
+                            </TableSortLabel>{index === 0? <IconButton style={{width:'20px',height:'20px', outline:'none'}}><RefreshdOutlinedIcon onClick={this.handleRefresh} /></IconButton>:''}                           
                             </TableCell>
                         })}
                     </TableRow>
@@ -119,8 +127,8 @@ class BaseTable extends Component {
                                     return <TableCell key={index} style={this.setBodyCellWidth(index)}>{row[k]}</TableCell>                                     
                                 })}                                     
                         </TableRow>}):
-                        data
-                        .map((row, index) => {
+                        originalData
+                        .map((row, index) => { 
                             return <TableRow key={index} hover={true} className={classes.tableRow} onClick={e => handleRowClick(e, Object.values(row)[0])}>
                                     {Object.keys(row).map((k, index) => {
                                         return <TableCell key={index} style={this.setBodyCellWidth(index)}>{row[k]}</TableCell>                                     

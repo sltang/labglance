@@ -48,9 +48,9 @@ class Network extends Component {
 
         function ticked() {
             link
-                .attr("x1", function (d) { return d.source.x; })
+                .attr("x1", function (d) { return d.source.x - 18; })
                 .attr("y1", function (d) { return d.source.y; })
-                .attr("x2", function (d) { return d.target.x; })
+                .attr("x2", function (d) { return d.target.x - 18; })
                 .attr("y2", function (d) { return d.target.y; });
 
             node
@@ -58,11 +58,11 @@ class Network extends Component {
                 .style("fill", "#d9d9d9")
                 .style("stroke", "#969696")
                 .style("stroke-width", "1px")
-                .attr("cx", function (d) { return d.x + 6; })
+                .attr("cx", function (d) { return d.x - 12; })
                 .attr("cy", function (d) { return d.y - 6; });
 
             label
-                .attr("x", function (d) { return d.x; })
+                .attr("x", function (d) { return d.x - 18; })
                 .attr("y", function (d) { return d.y; })
                 .style("font-size", "20px").style("fill", "#4393c3");
         }
@@ -73,12 +73,9 @@ class Network extends Component {
         const { width, height } = this.props
         return (
             <svg width={width} height={height}>
-                <g className="links">
-                </g>
-                <g className="nodes">
-                </g>
-                <g className="labels">
-                </g>
+                <g className="links"></g>
+                <g className="nodes"></g>
+                <g className="labels"></g>
             </svg>
         )
     }
