@@ -17,7 +17,7 @@ class InstrumentTable extends Component {
         if (data !== undefined) {
             return (
                 <BaseTable zoom={zoom} columnNames={columnNames} handleRowClick={this.handleRowClick} data={data} 
-                cellWidths={cellWidths}/>   
+                cellWidths={cellWidths} refresh={true}/>   
             )    
         } else {
             return <div></div>

@@ -25,7 +25,7 @@ class ComputerTable extends Component {
         if (data !== undefined) {
             return (
                 <BaseTable zoom={zoom} columnNames={columnNames} data={data} handleRowClick={this.handleRowClick} 
-                cellWidths={cellWidths}/>   
+                cellWidths={cellWidths} refresh={true} />   
             )    
         } else {
             return <div></div>

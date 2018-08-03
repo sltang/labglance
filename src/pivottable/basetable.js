@@ -7,8 +7,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
+import IconButton from '@material-ui/core/IconButton'
 import RefreshdOutlinedIcon from '@material-ui/icons/RefreshOutlined'
-import { IconButton } from '@material-ui/core';
 
 const styles = theme => ({
     root: {
@@ -17,27 +17,27 @@ const styles = theme => ({
     container: {
     },
     tableHead: {
-        backgroundColor : '#d3d3d3',
+        backgroundColor: '#d3d3d3',
         display: 'block',
     },
     tableBody: {
-        display:'block',
-        overflowY: 'auto',     
+        display: 'block',
+        overflowY: 'auto',
     },
     tableRow: {
-        height:'35px'
+        height: '35px'
     },
-    tableHeadCell:{
-        width:'100%'
+    tableHeadCell: {
+        width: '100%'
     },
-    tableBodyCell:{
-        width:'100%'
+    tableBodyCell: {
+        width: '100%'
     },
-    tableCell:{
-        width:'100%'
+    tableCell: {
+        width: '100%'
     },
     refreshIcon: {
-        width:'20px',height:'20px', outline:'none'
+        width: '20px', height: '20px', outline: 'none'
     },
 })
 
@@ -46,10 +46,13 @@ class BaseTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            order:'asc', 
-            orderBy:'',
-            originalData:this.props.data.slice(0)
+            order: 'asc',
+            orderBy: ''
         };
+    }
+
+    componentDidMount() {
+        this.setState({ originalData: this.props.data.slice(0) })
     }
 
     handleRequestSort = (event, property) => {
@@ -65,81 +68,84 @@ class BaseTable extends Component {
 
     getSorting = (order, orderBy) => {
         return order === 'desc'
-          ? (a, b) => {
-              if (b[orderBy] < a[orderBy]) return -1
-              if (b[orderBy] > a[orderBy]) return 1
-              return 0
-          }
-          : (a, b) => {
-            if (b[orderBy] < a[orderBy]) return 1
-            if (b[orderBy] > a[orderBy]) return -1
-            return 0
-          }
+            ? (a, b) => {
+                if (b[orderBy] < a[orderBy]) return -1
+                if (b[orderBy] > a[orderBy]) return 1
+                return 0
+            }
+            : (a, b) => {
+                if (b[orderBy] < a[orderBy]) return 1
+                if (b[orderBy] > a[orderBy]) return -1
+                return 0
+            }
     }
 
     setHeadCellWidth = (index) => {
         const { zoom, cellWidths } = this.props
-        return {width:cellWidths.head[zoom][index]}
+        return { width: cellWidths.head[zoom][index] }
     }
 
     setBodyCellWidth = (index) => {
         const { zoom, cellWidths } = this.props
-        return {width:cellWidths.body[zoom][index]}
+        return { width: cellWidths.body[zoom][index] }
     }
 
-    handleRefresh = (event) =>  {
-        this.setState({orderBy:''})
+    handleRefresh = (event) => {
+        this.setState({ orderBy: '' })
     }
-    
+
 
     render() {
-        const { classes, columnNames, data, handleRowClick, zoom} = this.props   
+        const { classes, columnNames, data, handleRowClick, zoom, refresh } = this.props
         const { order, originalData } = this.state
-        let orderBy = this.state.orderBy        
+        let orderBy = this.state.orderBy
         if (this.props.orderBy) {
             orderBy = this.props.orderBy
-        }       
-        return (
-            <div className={classes.container}>
-            <Table>
-                <TableHead className={classes.tableHead}>
-                    <TableRow className={classes.tableRow}>
-                        {columnNames.map((column, index) => {
-                            return <TableCell key={index}  
-                            style={this.setHeadCellWidth(index)}
-                            sortDirection={orderBy === column.id ? order : false}
-                            >                           
-                            <TableSortLabel                                
-                                onClick={e => this.handleRequestSort(e, column.id)}
-                            >
-                                {column.label}
-                            </TableSortLabel>{index === 0? <IconButton style={{width:'20px',height:'20px', outline:'none'}}><RefreshdOutlinedIcon onClick={this.handleRefresh} /></IconButton>:''}                           
-                            </TableCell>
-                        })}
-                    </TableRow>
-                </TableHead>
-                <TableBody className={classes.tableBody} style={zoom === 'in'? {'height':'100%'}:{'height':'200px'}}>
-                    {orderBy ? data
-                    .sort(this.getSorting(order, orderBy))
-                    .map((row, index) => {
-                        return <TableRow key={index} hover={true} className={classes.tableRow} onClick={e => handleRowClick(e, Object.values(row)[0])}>
-                                {Object.keys(row).map((k, index) => {
-                                    return <TableCell key={index} style={this.setBodyCellWidth(index)}>{row[k]}</TableCell>                                     
-                                })}                                     
-                        </TableRow>}):
-                        originalData
-                        .map((row, index) => { 
-                            return <TableRow key={index} hover={true} className={classes.tableRow} onClick={e => handleRowClick(e, Object.values(row)[0])}>
-                                    {Object.keys(row).map((k, index) => {
-                                        return <TableCell key={index} style={this.setBodyCellWidth(index)}>{row[k]}</TableCell>                                     
-                                    })}                                     
+        }
+        if (originalData !== undefined) {
+            return (
+                <div className={classes.container}>
+                    <Table>
+                        <TableHead className={classes.tableHead}>
+                            <TableRow className={classes.tableRow}>
+                                {columnNames.map((column, index) => {
+                                    return <TableCell key={index}
+                                        style={this.setHeadCellWidth(index)}
+                                        sortDirection={orderBy === column.id ? order : false}
+                                    >
+                                        <TableSortLabel
+                                            onClick={e => this.handleRequestSort(e, column.id)}
+                                        >
+                                            {column.label}
+                                        </TableSortLabel> {index === 0 && refresh ? <IconButton style={{width: '22px', height: '22px', outline: 'none'}}><RefreshdOutlinedIcon onClick={this.handleRefresh} /></IconButton>:''}
+                                    </TableCell>
+                                })}
                             </TableRow>
-
-                    })}
-                </TableBody>
-            </Table>
-            </div>
-        )
+                        </TableHead>
+                        <TableBody className={classes.tableBody} style={zoom === 'in' ? { 'height': '100%' } : { 'height': '200px' }}>
+                            {orderBy ? data
+                                .sort(this.getSorting(order, orderBy))
+                                .map((row, index) => {
+                                    return <TableRow key={index} hover={true} className={classes.tableRow} onClick={e => handleRowClick(e, Object.values(row)[0])}>
+                                        {Object.keys(row).map((k, index) => {
+                                            return <TableCell key={index} style={this.setBodyCellWidth(index)}>{row[k]}</TableCell>
+                                        })}
+                                    </TableRow>
+                                }) :
+                                originalData
+                                    .map((row, index) => {
+                                        return <TableRow key={index} hover={true} className={classes.tableRow} onClick={e => handleRowClick(e, Object.values(row)[0])}>
+                                            {Object.keys(row).map((k, index) => {
+                                                return <TableCell key={index} style={this.setBodyCellWidth(index)}>{row[k]}</TableCell>
+                                            })}
+                                        </TableRow>
+                                    })}
+                        </TableBody>
+                    </Table>
+                </div>)
+        } else {
+            return <div></div>
+        }
     }
 
 }
