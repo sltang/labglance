@@ -29,11 +29,6 @@ class AppBar extends Component {
         const { classes, handleLogout, gotoDevices, gotoTopology } = this.props
         return (
             <div className={classes.appbar}>
-                <Tooltip title="Instrument Dashboard">
-                    <IconButton onClick={gotoDevices} style={{ 'outline': 'none' }}>
-                        <DevicesOutlinedIcon className={classes.icon} />
-                    </IconButton>
-                </Tooltip>
                 <Tooltip title="Topology Viewer">
                     <IconButton onClick={gotoTopology} style={{ 'outline': 'none' }} >
                         <DashBoardOutlinedIcon className={classes.icon} />

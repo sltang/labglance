@@ -147,11 +147,11 @@ class ComputerDetails extends Component {
                     {instruments && instruments.length > 0 ?
                     <Fragment>
                         <Network width={450} height={350} graph={graph}/>
-                        <BaseTable zoom={'in'} columnNames={columnNames} data={instruments} handleRowClick={this.handleRowClick} cellWidths={instrumentTableCellWidths} headerCellWidth={['75%', '30%']} bodyCellWidth={['55%', '100%']}
+                        <BaseTable zoom={'in'} columnNames={columnNames} data={instruments} handleRowClick={this.handleRowClick} cellWidths={instrumentTableCellWidths} refresh={true}
                     /><br /></Fragment> :
                     ''}
                     {data.length > 0 ?
-                    <Fragment><BaseTable zoom={'in'} columnNames={columnNames} data={data} handleRowClick={this.handleRowClick} cellWidths={computerTableCellWidths} headerCellWidth={['75%', '30%']} bodyCellWidth={['30%', '70%']}
+                    <Fragment><BaseTable zoom={'in'} columnNames={columnNames} data={data} handleRowClick={this.handleRowClick} cellWidths={computerTableCellWidths} refresh={true}
                     /><br /></Fragment>
                     :
                     ''}
@@ -160,7 +160,7 @@ class ComputerDetails extends Component {
         } else if (server !== undefined)  {
             return  <div className={classes.container}>
             <div>{title}</div>
-            <BaseTable zoom={'in'} columnNames={columnNames} data={server} handleRowClick={this.handleRowClick} cellWidths={serverTableCellWidths} headerCellWidth={['75%', '30%']} bodyCellWidth={['30%', '70%']}
+            <BaseTable zoom={'in'} columnNames={columnNames} data={server} handleRowClick={this.handleRowClick} cellWidths={serverTableCellWidths} refresh={true}/>
             />
             </div>
         } else {

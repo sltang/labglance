@@ -114,19 +114,22 @@ export const getDataAcquistionSoftware = (collections) => {
     return da
 }
 
-export const getInstruments = (controllers) => {
-    let instruments = []
-    Object.keys(controllers).forEach(controller => {
-        let insts = controllers[controller]
-        insts.forEach(inst => {
-            instruments.push({
-                name: inst.name,
-                driver: inst.driver,
-                controller: controller.toUpperCase(),
-            })
+export const getInstruments = (collections) => {
+    let insts = []
+    let instruments = groupBy(collections['OLCDSINST_Instrument'], "name")
+
+    Object.keys(instruments).forEach(name => {
+        let instrument = instruments[name].sort((r1, r2) => {
+            if (r1.timestampatorigin === r2.timestampatorigin) return 0;
+            return r1.timestampatorigin < r2.timestampatorigin ? 1 : -1;
+        })[0];
+        insts.push({
+            name: instrument.name,
+            driver: instrument.driver,
+            controller: instrument.controller.toUpperCase(),
         })
     })
-    return instruments
+    return insts;
 }
 
 export const getMachinePivotTable = (collections) => {

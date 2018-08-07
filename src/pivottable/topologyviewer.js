@@ -113,7 +113,7 @@ class TopologyViewer extends Component {
             let software = [...apps, ...das]
 
             //instrument table
-            let instruments = dataService.getInstruments(controllers)
+            let instruments = dataService.getInstruments(collections)
             this.setState({ counts: counts, computerTable: computerTable, software: software, instruments: instruments })
             sessionStorage.setItem('topology-view-servers', JSON.stringify(servers))
             sessionStorage.setItem('topology-view-computers', JSON.stringify(computers))
