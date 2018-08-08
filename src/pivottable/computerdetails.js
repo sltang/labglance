@@ -46,7 +46,6 @@ class ComputerDetails extends Component {
         let machinename = match.params.name
         if (machinename === undefined) return
         const computers = JSON.parse(sessionStorage.getItem('topology-view-computers'))
-        //console.log(computers)
         let title = ''
         let computer = computers.filter(comp => comp.machinename === machinename)
         if (computer.length > 0) {
@@ -74,7 +73,6 @@ class ComputerDetails extends Component {
         } 
         //servers  
         const server = this.getServer(machinename)
-        console.log(server)
         if (server.length > 0) {
             this.setState({server:server})
             title += 'Server: '

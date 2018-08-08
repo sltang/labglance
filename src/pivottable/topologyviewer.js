@@ -10,6 +10,12 @@ import SoftwareTable from './softwaretable'
 import InstrumentTable from './instrumenttable'
 import classNames from 'classnames';
 import * as dataService from './data-processor'
+import SearchIcon from '@material-ui/icons/Search';
+import TextField from '@material-ui/core/TextField';
+import ClearIcon from '@material-ui/icons/Clear';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import { Subject } from 'rxjs/Subject';
+import { debounceTime, distinctUntilChanged, map }  from 'rxjs/operators';
 
 const styles = theme => ({
     root: {
@@ -59,12 +65,29 @@ class TopologyViewer extends Component {
             counts: sessionStorage.getItem('topology-view-counts') === null ? [] : JSON.parse(sessionStorage.getItem('topology-view-counts')),
             computerTable: sessionStorage.getItem('topology-view-computerTable') === null ? [] : JSON.parse(sessionStorage.getItem('topology-view-computerTable')),
             software: sessionStorage.getItem('topology-view-software') === null ? [] : JSON.parse(sessionStorage.getItem('topology-view-software')),
-            instruments: sessionStorage.getItem('topology-view-instruments') === null ? [] : JSON.parse(sessionStorage.getItem('topology-view-instruments'))
+            instruments: sessionStorage.getItem('topology-view-instruments') === null ? [] : JSON.parse(sessionStorage.getItem('topology-view-instruments')),
+            keywords: ''
         };
+        this.handleSearch$ = new Subject();
     }
 
     componentDidMount() {
-
+        this.handleSearch$
+        .pipe(
+            debounceTime(500),
+            distinctUntilChanged(),
+            map((term) => this.search(term))
+        )
+        .subscribe(matches => {
+            const {pcs, insts}=matches            
+            const computerNames = pcs.map(pc => pc.machinename)
+            const computerTable = JSON.parse(sessionStorage.getItem('topology-view-computerTable'))
+            const searchResults = computerTable.filter(c => computerNames.indexOf(c.hostname) >= 0)
+            const instruments = JSON.parse(sessionStorage.getItem('topology-view-instruments'))
+            const instrumentNames = insts.map(i => i.name)//[...new Set(insts.map(i => i.name))]//unique names
+            const instrumentResults = instruments.filter(i => instrumentNames.indexOf(i.name) >= 0)
+            this.setState({computerTable:searchResults, instruments:instrumentResults})
+        })
     }
 
     handleZoom = (event, id) => {
@@ -106,14 +129,15 @@ class TopologyViewer extends Component {
             computers.forEach(comp => {
                 if (comp.hasOwnProperty('appversion') && versions.indexOf(comp.appversion) === -1 && comp.appversion) {
                     versions.push(comp.appversion)
-                    apps.push({ 'applongname': comp.applongname, 'appversion': comp.appversion })
+                    apps.push({'machinename':comp.machinename, 'applongname': comp.applongname, 'appversion': comp.appversion, 
+                    'sessionstarttime':comp.sessionstarttime, 'installationdirectory':comp.installationdirectory })
                 }
             })
-            let das = dataService.getDataAcquistionSoftware(collections)
+            let das = dataService.getDataAnaysisSoftware(collections, computers)
             let software = [...apps, ...das]
 
             //instrument table
-            let instruments = dataService.getInstruments(collections)
+            const {instruments, completeInstruments} = dataService.getInstruments(collections)
             this.setState({ counts: counts, computerTable: computerTable, software: software, instruments: instruments })
             sessionStorage.setItem('topology-view-servers', JSON.stringify(servers))
             sessionStorage.setItem('topology-view-computers', JSON.stringify(computers))
@@ -121,25 +145,39 @@ class TopologyViewer extends Component {
             sessionStorage.setItem('topology-view-computerTable', JSON.stringify(computerTable))
             sessionStorage.setItem('topology-view-software', JSON.stringify(software))
             sessionStorage.setItem('topology-view-instruments', JSON.stringify(instruments))
+            sessionStorage.setItem('topology-view-collections', JSON.stringify(collections))
+            sessionStorage.setItem('topology-view-completeInstruments', JSON.stringify(completeInstruments))
 
         }
     }
 
-    handleRefresh = (name) => {
-        switch (name) {
-            case 'Software': this.setState({ softwareOrderBy: '' }); break;
-            case 'Computers': this.setState({ computersOrderBy: '' }); break;
-            case 'Instruments': this.setState({ instrumentsOrderBy: '' }); break;
-            default:
-        }
-        
+    handleSearch = (event) => {
+        const term = event.target.value
+        if (term) {
+            this.handleSearch$.next(term)
+            this.setState({keywords:term})
+        }  
+    }
+
+    search = (term) => {
+        const computers = JSON.parse(sessionStorage.getItem('topology-view-computers'))
+        const pcs = dataService.searchPC(computers, term)
+        const collections = JSON.parse(sessionStorage.getItem('topology-view-collections'))
+        const instruments = dataService.searchInstruments(collections, term)        
+        return {pcs:pcs, insts:instruments}
+    }
+
+    handleResetSearch = (event) => {
+        if (event.target.value) return
+        const computerTable = JSON.parse(sessionStorage.getItem('topology-view-computerTable'))
+        const instruments = JSON.parse(sessionStorage.getItem('topology-view-instruments'))
+        this.setState({keywords:'', computerTable, instruments})
     }
 
     render() {
         const { classes } = this.props
-        const { zoom, selected, counts, computerTable, software, instruments, softwareOrderBy, computersOrderBy, instrumentsOrderBy } = this.state
+        const { zoom, selected, counts, computerTable, software, instruments, keywords } = this.state
         let zoomIn = zoom === 'in'
-        
        return (
             <div className={classes.root}>
                 <div className="row" style={{ 'width': '100%' }}>
@@ -151,6 +189,18 @@ class TopologyViewer extends Component {
                                 <input className="btn btn-outline-primary btn-sm" value="Upload" type="submit" />
                             </form>
                         </div>
+                    </div>
+                    <div className={classNames('col-12', 'col-md-6')} style={zoomIn ? zoomOutCss : restoreCss}>
+                        { counts.length > 0 ?
+                            <Fragment><TextField value={keywords} onChange={this.handleSearch} InputProps={{
+                                startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon />
+                                </InputAdornment>
+                                ),
+                            }}
+                            /><IconButton style={{'outline':'none'}}><ClearIcon onClick={this.handleResetSearch}/></IconButton></Fragment>: ''
+                        }
                     </div>
                 </div>
                 { counts.length > 0 ? <Fragment>
@@ -173,7 +223,7 @@ class TopologyViewer extends Component {
                                 </IconButton>
                                 </div>
                             </div>
-                            <SoftwareTable zoom={zoom} data={software} orderBy={softwareOrderBy}/>
+                            <SoftwareTable zoom={zoom} data={software} />
                         </div>
                     </div>
                 </div>
@@ -204,7 +254,7 @@ class TopologyViewer extends Component {
                             <InstrumentTable zoom={zoom} data={instruments} />
                         </div>
                     </div>
-                                    </div></Fragment>:<div></div> }
+                </div></Fragment>:<div></div> }
 
             </div>)
                                

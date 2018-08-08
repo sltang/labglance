@@ -94,10 +94,9 @@ export const getComputers = (collections) => {
         computers.push(machine[0])
     })
     return computers
-
 }
 
-export const getDataAcquistionSoftware = (collections) => {
+export const getDataAnaysisSoftware = (collections, computers) => {
     let das = groupBy(collections['OLCDSDA_Session'], "appversion")
     let da = []
     Object.keys(das).forEach(appversion => {
@@ -107,17 +106,26 @@ export const getDataAcquistionSoftware = (collections) => {
             return r1.sessionstarttime < r2.sessionstarttime ? 1 : -1;
         });
         da.push({
+            machinename:version[0].machinename,
             applongname:'Agilent OpenLAB CDS Data Analysis', 
-            appversion:version[0].appversion
+            appversion:version[0].appversion,
+            installationdirectory:version[0].installationdirectory,
+            sessionstarttime: version[0].sessionstarttime
+        })
+        computers.forEach(comp => {
+            if (comp => comp.machinename === version[0].machinename) {
+                comp['applongname1'] = 'Agilent OpenLAB CDS Data Analysis'
+                comp['appversion1'] = version[0].appversion
+            } 
         })
     })
     return da
 }
 
-export const getInstruments = (collections) => {
-    let insts = []
-    let instruments = groupBy(collections['OLCDSINST_Instrument'], "name")
-
+export const getInstruments = (collections) => {    
+    let instruments = groupBy(collections['OLCDSACQ_Instrument'], 'name')// OLCDSINST_Instrument is missing module information
+    let insts = [] //only for instrument table
+    let completeInstruments = [] //complete instrument details
     Object.keys(instruments).forEach(name => {
         let instrument = instruments[name].sort((r1, r2) => {
             if (r1.timestampatorigin === r2.timestampatorigin) return 0;
@@ -128,8 +136,88 @@ export const getInstruments = (collections) => {
             driver: instrument.driver,
             controller: instrument.controller.toUpperCase(),
         })
+        completeInstruments.push(instrument)
     })
-    return insts;
+    return {instruments:insts, completeInstruments:completeInstruments};
+}
+
+export const searchPC = (computers, keywords) => {
+    let pcs = []   
+    computers.forEach(computer => {
+        let match = false
+        Object.keys(computer).forEach(key => {
+            const value = computer[key]
+            if (value === null || match) return            
+            if (key === 'drives') {
+                value.forEach(drv => {
+                    Object.values(drv.Properties).forEach(v => {
+                        if (!v) return
+                        if ((v.includes && v.includes(keywords)) || (typeof v === 'number' && v.toString() === keywords)) {
+                            pcs.push(computer)
+                            match = true
+                        }
+                    })
+                })
+            } else if (key === 'plugins') {
+                value.forEach(plugin => {
+                    Object.values(plugin.Properties).forEach(v => {
+                        if (!v) return
+                        if ((v.includes && v.includes(keywords)) || (typeof v === 'number' && v.toString() === keywords)) {
+                            pcs.push(computer)
+                            match = true
+                        }
+                    })
+                })
+            } else if ((value.includes && value.includes(keywords)) || (typeof value === 'number' && value.toString() === keywords)) {
+                pcs.push(computer)
+                match = true
+            }        
+        })        
+    })
+    return pcs
+}
+
+export const searchSoftware = (software, keywords) => {
+    return Object.keys(software).filter(s => {
+        let match = false
+        Object.values(s).forEach(v => {
+            if ((v.includes && v.includes(keywords)) || (typeof v === 'number' && v.toString() === keywords)) {
+                match = true
+            }
+        })
+        return match
+    })
+}
+
+export const searchInstruments = (collections, keywords) => {
+    let instruments = groupBy(collections['OLCDSACQ_Instrument'], "name")
+    let insts= []
+    Object.keys(instruments).forEach( name => {
+        let instrument = instruments[name].sort((r1, r2) => {
+            if (r1.timestampatorigin === r2.timestampatorigin) return 0;
+            return r1.timestampatorigin < r2.timestampatorigin ? -1 : 1;
+        })[0];
+        Object.keys(instrument).forEach(key => {
+            const value = instrument[key]
+            let match = false
+            if (value === null || match) return
+            if (key === 'modules') {
+                value.forEach(mod => {
+                    Object.values(mod.Properties).forEach(v => {
+                        if (!v) return
+                        if ((v.includes && v.includes(keywords)) || (typeof v === 'number' && v.toString() === keywords)) {
+                            match = true
+                            insts.push(instrument)                            
+                        }
+                    })
+                })
+            } else if ((value.includes && value.includes(keywords)) || (typeof value === 'number' && value.toString() === keywords)) {
+                match = true
+                insts.push(instrument)
+            }  
+        })
+    })
+    return insts
 }
 
 export const getMachinePivotTable = (collections) => {

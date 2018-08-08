@@ -6,6 +6,7 @@ import AppBar from './appbar'
 import InstrumentDashboard from '../instrument/dashboard';
 import TopologyViewer from '../pivottable/topologyviewer'
 import ComputerDetails from '../pivottable/computerdetails'
+import InstrumentDetails from '../pivottable/instrumentdetails'
 
 const styles = theme => ({
 
@@ -36,6 +37,7 @@ class MainLayout extends Component {
                     <Route exact path="/dashboard" component={InstrumentDashboard} />
                     <Route exact path="/topology-view" component={TopologyViewer} />
                     <Route exact path="/computer-details/:name" component={ComputerDetails} />
+                    <Route exact path="/instrument-details/:name" component={InstrumentDetails} />
                 </Switch>
             </div>
         )

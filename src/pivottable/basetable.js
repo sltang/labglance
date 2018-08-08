@@ -97,6 +97,8 @@ class BaseTable extends Component {
 
     render() {
         const { classes, columnNames, data, handleRowClick, zoom, refresh } = this.props
+        const keys = columnNames.map(col => col.id)
+        //console.log(data)
         const { order, originalData } = this.state
         let orderBy = this.state.orderBy
         if (this.props.orderBy) {
@@ -123,11 +125,11 @@ class BaseTable extends Component {
                             </TableRow>
                         </TableHead>
                         <TableBody className={classes.tableBody} style={zoom === 'in' ? { 'height': '100%' } : { 'height': '200px' }}>
-                            {orderBy ? data
+                            {(orderBy || data.length !== originalData.length) ? data
                                 .sort(this.getSorting(order, orderBy))
                                 .map((row, index) => {
                                     return <TableRow key={index} hover={true} className={classes.tableRow} onClick={e => handleRowClick(e, Object.values(row)[0])}>
-                                        {Object.keys(row).map((k, index) => {
+                                        {Object.keys(row).filter(k => keys.indexOf(k) >= 0).map((k, index) => {
                                             return <TableCell key={index} style={this.setBodyCellWidth(index)}>{row[k]}</TableCell>
                                         })}
                                     </TableRow>
@@ -135,7 +137,7 @@ class BaseTable extends Component {
                                 originalData
                                     .map((row, index) => {
                                         return <TableRow key={index} hover={true} className={classes.tableRow} onClick={e => handleRowClick(e, Object.values(row)[0])}>
-                                            {Object.keys(row).map((k, index) => {
+                                            {Object.keys(row).filter(k => keys.indexOf(k) >= 0).map((k, index) => {
                                                 return <TableCell key={index} style={this.setBodyCellWidth(index)}>{row[k]}</TableCell>
                                             })}
                                         </TableRow>

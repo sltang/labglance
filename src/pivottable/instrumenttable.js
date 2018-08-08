@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import BaseTable from './basetable'
 
 const columnNames=[{id:'name', label:'Instrument'}, {id :'driver', label:'Type'}, {id :'controller', label:'Controller'}]
@@ -10,6 +11,8 @@ const cellWidths = {
 class InstrumentTable extends Component {
 
     handleRowClick = (e, name) => {
+        const { history: {push}} = this.props
+        push('/instrument-details/'+name)
     }
 
     render() {
@@ -26,4 +29,4 @@ class InstrumentTable extends Component {
 
 }
 
-export default InstrumentTable
+export default withRouter(InstrumentTable)
