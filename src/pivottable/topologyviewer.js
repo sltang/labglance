@@ -154,9 +154,13 @@ class TopologyViewer extends Component {
     handleSearch = (event) => {
         const term = event.target.value
         if (term) {
-            this.handleSearch$.next(term)
-            this.setState({keywords:term})
-        }  
+            this.handleSearch$.next(term)            
+        }  else {
+            const computerTable = JSON.parse(sessionStorage.getItem('topology-view-computerTable'))
+            const instruments = JSON.parse(sessionStorage.getItem('topology-view-instruments'))
+            this.setState({computerTable, instruments})
+        }
+        this.setState({keywords:term})
     }
 
     search = (term) => {
