@@ -143,6 +143,7 @@ export const getInstruments = (collections) => {
 
 export const searchPC = (computers, keywords) => {
     let pcs = []   
+    let lckeywords = keywords.toLowerCase()
     computers.forEach(computer => {
         let match = false
         Object.keys(computer).forEach(key => {
@@ -152,9 +153,9 @@ export const searchPC = (computers, keywords) => {
                 value.forEach(drv => {
                     Object.values(drv.Properties).forEach(v => {
                         if (!v) return
-                        if ((v.includes && v.includes(keywords)) || (typeof v === 'number' && v.toString() === keywords)) {
+                        if ((v.includes && v.toLowerCase().includes(lckeywords)) || (typeof v === 'number' && v.toString() === keywords)) {
                             pcs.push(computer)
-                            match = true
+                            match = true                      
                         }
                     })
                 })
@@ -162,13 +163,13 @@ export const searchPC = (computers, keywords) => {
                 value.forEach(plugin => {
                     Object.values(plugin.Properties).forEach(v => {
                         if (!v) return
-                        if ((v.includes && v.includes(keywords)) || (typeof v === 'number' && v.toString() === keywords)) {
+                        if ((v.includes && v.toLowerCase().includes(lckeywords)) || (typeof v === 'number' && v.toString() === keywords)) {
                             pcs.push(computer)
                             match = true
                         }
                     })
                 })
-            } else if ((value.includes && value.includes(keywords)) || (typeof value === 'number' && value.toString() === keywords)) {
+            } else if ((value.includes && value.toLowerCase().includes(keywords)) || (typeof value === 'number' && value.toString() === keywords)) {
                 pcs.push(computer)
                 match = true
             }        
@@ -178,10 +179,11 @@ export const searchPC = (computers, keywords) => {
 }
 
 export const searchSoftware = (software, keywords) => {
+    let lckeywords = keywords.toLowerCase()
     return Object.keys(software).filter(s => {
         let match = false
         Object.values(s).forEach(v => {
-            if ((v.includes && v.includes(keywords)) || (typeof v === 'number' && v.toString() === keywords)) {
+            if ((v.includes && v.toLowerCase().includes(lckeywords)) || (typeof v === 'number' && v.toString() === keywords)) {
                 match = true
             }
         })
@@ -190,6 +192,7 @@ export const searchSoftware = (software, keywords) => {
 }
 
 export const searchInstruments = (collections, keywords) => {
+    let lckeywords = keywords.toLowerCase()
     let instruments = groupBy(collections['OLCDSACQ_Instrument'], "name")
     let insts= []
     Object.keys(instruments).forEach( name => {
@@ -205,13 +208,13 @@ export const searchInstruments = (collections, keywords) => {
                 value.forEach(mod => {
                     Object.values(mod.Properties).forEach(v => {
                         if (!v) return
-                        if ((v.includes && v.includes(keywords)) || (typeof v === 'number' && v.toString() === keywords)) {
+                        if ((v.includes && v.toLowerCase().includes(lckeywords)) || (typeof v === 'number' && v.toString() === keywords)) {
                             match = true
                             insts.push(instrument)                            
                         }
                     })
                 })
-            } else if ((value.includes && value.includes(keywords)) || (typeof value === 'number' && value.toString() === keywords)) {
+            } else if ((value.includes && value.toLowerCase().includes(lckeywords)) || (typeof value === 'number' && value.toString() === keywords)) {
                 match = true
                 insts.push(instrument)
             }  
