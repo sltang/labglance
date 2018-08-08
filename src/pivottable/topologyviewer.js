@@ -133,7 +133,7 @@ class TopologyViewer extends Component {
                     'sessionstarttime':comp.sessionstarttime, 'installationdirectory':comp.installationdirectory })
                 }
             })
-            let das = dataService.getDataAnaysisSoftware(collections, computers)
+            let das = dataService.getDataAnalysisSoftware(collections, computers)
             let software = [...apps, ...das]
 
             //instrument table
@@ -199,14 +199,14 @@ class TopologyViewer extends Component {
                     </div>
                     <div className={classNames('col-12', 'col-md-6')} style={zoomIn ? zoomOutCss : restoreCss}>
                         { counts.length > 0 ?
-                            <Fragment><TextField value={keywords} onChange={this.handleSearch} InputProps={{
+                            <div style={{ textAlign: 'right' }}><TextField value={keywords} onChange={this.handleSearch} InputProps={{
                                 startAdornment: (
                                 <InputAdornment position="start">
                                     <SearchIcon />
                                 </InputAdornment>
                                 ),
                             }}
-                            /><IconButton style={{'outline':'none'}}><ClearIcon onClick={this.handleResetSearch}/></IconButton></Fragment>: ''
+                            /><IconButton style={{'outline':'none'}}><ClearIcon onClick={this.handleResetSearch}/></IconButton></div>: ''
                         }
                     </div>
                 </div>

@@ -87,9 +87,13 @@ class InstrumentDetails extends Component {
     getGraph = (instrument) => {
         let nodes = []
         let links = []
-        nodes.push({id: 2, group: '1', name: instrument.name})
-        nodes.push({id: '1', group: '1', name: instrument.controller })
-        links.push({source: '1', target:2, value:10})        
+        nodes.push({id: '1', group: '1', name: instrument.name})
+        nodes.push({id: '2', group: '2', name: instrument.controller })
+        links.push({source: '1', target:'2', value:50})   //value - link thickness
+        instrument.modules.forEach((m, index) => {
+            nodes.push({id:index+3, group:'3', name:m.Properties.name})
+            links.push({source: index+3, target:'1', value:10})
+        })    
         const graph = {nodes:nodes, links:links}
         return graph
     }

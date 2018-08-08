@@ -10,8 +10,6 @@ const collectionNames = ['OLCDSDA_Session',
     'OLCDSINST_Topology'
 ]
 
-let data
-let collections
 let machineTable = []
 let machinePivotTable = []
 
@@ -22,8 +20,8 @@ export const parseData = (raw) => {
     raw = '[' + raw.replace(/(.*)\r\n/g, '$1,')
     raw = raw.replace(/(.*),$/, '$1')
     raw += ']'
-    data = JSON.parse(raw);
-    return collections = groupByCollection(data, "CollectionName")
+    let data = JSON.parse(raw);
+    return groupByCollection(data, "CollectionName")
 }
 
 export const getServers = (collections) => {
@@ -96,7 +94,7 @@ export const getComputers = (collections) => {
     return computers
 }
 
-export const getDataAnaysisSoftware = (collections, computers) => {
+export const getDataAnalysisSoftware = (collections, computers) => {
     let das = groupBy(collections['OLCDSDA_Session'], "appversion")
     let da = []
     Object.keys(das).forEach(appversion => {
@@ -169,7 +167,7 @@ export const searchPC = (computers, keywords) => {
                         }
                     })
                 })
-            } else if ((value.includes && value.toLowerCase().includes(keywords)) || (typeof value === 'number' && value.toString() === keywords)) {
+            } else if ((value.includes && value.toLowerCase().includes(lckeywords)) || (typeof value === 'number' && value.toString() === keywords)) {
                 pcs.push(computer)
                 match = true
             }        

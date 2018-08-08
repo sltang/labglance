@@ -124,7 +124,7 @@ class BaseTable extends Component {
                                 })}
                             </TableRow>
                         </TableHead>
-                        <TableBody className={classes.tableBody} style={zoom === 'in' ? { 'height': '100%' } : { 'height': '200px' }}>
+                        <TableBody className={classes.tableBody} style={zoom === 'in' ? { 'height': '100%' } : { 'height': '220px' }}>
                             {(orderBy || data.length !== originalData.length) ? data
                                 .sort(this.getSorting(order, orderBy))
                                 .map((row, index) => {
