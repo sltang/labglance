@@ -114,7 +114,7 @@ class TopologyViewer extends Component {
             let numServers = servers.length
             let numControllers = Object.keys(controllers).length
             let numComputers = computers.length - numControllers
-            let counts = [{ name: 'Server', value: numServers }, { name: 'Controller', value: numControllers }, { name: 'Client', value: numComputers }]
+            
 
             //computers table
             let controllerNames = Object.keys(controllers).map(controllerName => controllerName.toUpperCase())
@@ -138,6 +138,9 @@ class TopologyViewer extends Component {
 
             //instrument table
             const {instruments, completeInstruments} = dataService.getInstruments(collections)
+
+            let counts = [{ name: 'Server', value: numServers }, { name: 'Controller', value: numControllers }, { name: 'Client', value: numComputers }, { name: 'Instrument', value: instruments.length }]
+
             this.setState({ counts: counts, computerTable: computerTable, software: software, instruments: instruments })
             sessionStorage.setItem('topology-view-servers', JSON.stringify(servers))
             sessionStorage.setItem('topology-view-computers', JSON.stringify(computers))
