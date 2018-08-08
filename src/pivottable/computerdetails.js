@@ -7,16 +7,16 @@ import Network from './network'
 const columnNames=[ {id :'property', label:'Property'}, {id :'value', label:'Value'}]
 const excludedFields = ['timezoneoffsetatorigin', 'action', 'timestampatorigin', 'sessionid', 'username', 'timezonenameatorigin', 'uptime', 'appname', 'installationtype', 'id']
 const instrumentTableCellWidths = {
-    head: {in:['75%', '30%'], out:['75%', '30%']},
+    head: {in:['70%', '30%'], out:['75%', '30%']},
     body: {in:['55%', '100%'], out:['55%', '100%']}
 }
 const computerTableCellWidths = {
-    head: {in:['75%', '30%'], out:['75%', '30%']},
+    head: {in:['75%', '25%'], out:['75%', '30%']},
     body: {in:['30%', '70%'], out:['30%', '70%']}
 }
 const serverTableCellWidths = {
     head: {in:['75%', '30%'], out:['75%', '30%']},
-    body: {in:['30%', '70%'], out:['30%', '70%']}
+    body: {in:['20%', '80%'], out:['30%', '70%']}
 }
 const styles = theme => ({
     root: {
@@ -159,7 +159,6 @@ class ComputerDetails extends Component {
             return  <div className={classes.container}>
             <div>{title}</div>
             <BaseTable zoom={'in'} columnNames={columnNames} data={server} handleRowClick={this.handleRowClick} cellWidths={serverTableCellWidths} refresh={true}/>
-            />
             </div>
         } else {
             return <div></div>

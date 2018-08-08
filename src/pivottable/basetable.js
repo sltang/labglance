@@ -27,15 +27,6 @@ const styles = theme => ({
     tableRow: {
         height: '35px'
     },
-    tableHeadCell: {
-        width: '100%'
-    },
-    tableBodyCell: {
-        width: '100%'
-    },
-    tableCell: {
-        width: '100%'
-    },
     refreshIcon: {
         width: '20px', height: '20px', outline: 'none'
     },
