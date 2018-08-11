@@ -1,8 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import BaseTable from './basetable'
 import Network from './network'
+import { COLORS } from './piechart'
 
 const columnNames=[ {id :'property', label:'Property'}, {id :'value', label:'Value'}]
 const excludedFields = ['timezoneoffsetatorigin', 'action', 'timestampatorigin', 'sessionid', 'username', 'timezonenameatorigin', 'uptime', 'appname', 'installationtype', 'id']
@@ -78,7 +80,7 @@ class ComputerDetails extends Component {
             title += 'Server: '
         } 
         title += machinename
-        this.setState({title: title})        
+        this.setState({title: title, machinename:machinename})        
     }
 
     getArrayData = (key, arr) => {
@@ -108,11 +110,11 @@ class ComputerDetails extends Component {
             let name = {property: 'name', value: instrument.name}
             instrus.push(driver)
             instrus.push(name)
-            nodes.push({id: index+2, group: '1', name: instrument.name})
+            nodes.push({id: index+2, group: '1', name: instrument.name, color: COLORS[3]})
             links.push({source: '1', target:index+2, value:10})
         })
         if (nodes.length > 0) {
-            nodes.push({id: '1', group: '1', name: controllerName })
+            nodes.push({id: '1', group: '1', name: controllerName, color: COLORS[1]})
         }
         const graph = {nodes:nodes, links:links}
         return {instruments:instrus, graph:graph}
@@ -135,6 +137,14 @@ class ComputerDetails extends Component {
         return server
     }
 
+    handleNodeClick = (name) => {
+        const { history:{push}} = this.props
+        const { machinename } = this.state
+        if (machinename !== name) {
+            push('/instrument-details/'+name)
+        }
+    }
+
     render() {
         const {classes } = this.props
         const { data, instruments, server, graph, title } = this.state
@@ -144,7 +154,7 @@ class ComputerDetails extends Component {
                     <div>{title}</div>
                     {instruments && instruments.length > 0 ?
                     <Fragment>
-                        <Network width={450} height={350} graph={graph}/>
+                        <Network width={450} height={350} graph={graph} handleNodeClick={this.handleNodeClick}/>
                         <BaseTable zoom={'in'} columnNames={columnNames} data={instruments} handleRowClick={this.handleRowClick} cellWidths={instrumentTableCellWidths} refresh={true}
                     /><br /></Fragment> :
                     ''}
@@ -171,4 +181,4 @@ ComputerDetails.propTypes = {
     classes: PropTypes.object.isRequired,
 }
 
-export default withStyles(styles)(ComputerDetails)
+export default withStyles(styles)(withRouter(ComputerDetails))

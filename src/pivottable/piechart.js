@@ -6,13 +6,11 @@ import { PieChart, Pie, Cell } from 'recharts';
 
 const styles = theme =>  ({
     container: {
-        display: 'flex',
-        
-    },
-
+        display: 'flex',        
+    }
 })
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+export const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 const RADIAN = Math.PI / 180;                    
 

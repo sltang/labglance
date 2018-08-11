@@ -175,10 +175,11 @@ class TopologyViewer extends Component {
     }
 
     handleResetSearch = (event) => {
-        if (event.target.value) return
-        const computerTable = JSON.parse(sessionStorage.getItem('topology-view-computerTable'))
-        const instruments = JSON.parse(sessionStorage.getItem('topology-view-instruments'))
-        this.setState({keywords:'', computerTable, instruments})
+        if (this.state.keywords !== '') {
+            const computerTable = JSON.parse(sessionStorage.getItem('topology-view-computerTable'))
+            const instruments = JSON.parse(sessionStorage.getItem('topology-view-instruments'))
+            this.setState({keywords:'', computerTable, instruments})
+        }
     }
 
     render() {

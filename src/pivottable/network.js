@@ -10,7 +10,7 @@ class Network extends Component {
     }
 
     componentDidMount() {
-        const { width, height, graph } = this.props
+        const { width, height, graph, handleNodeClick } = this.props
 
         let simulation = d3.forceSimulation(graph.nodes)
             .force("link", d3.forceLink().id(function (d) { return d.id; }))
@@ -28,13 +28,15 @@ class Network extends Component {
             .data(graph.nodes)
             .enter().append("circle")
             .attr("r", 6)
+            .on("click", clicked)
 
         var label = d3.select('.labels')
             .selectAll("text")
             .data(graph.nodes)
             .enter().append("text")
             .attr("class", "label")
-            .text(function (d) { return d.name; });
+            .text(function (d) { return d.name; })
+            .on("click", clicked)
 
         node.append("title")
             .text(function (d) { return d.id; });
@@ -55,7 +57,7 @@ class Network extends Component {
 
             node
                 .attr("r", function (d) { return d.id === '1' ? 30 : 20 })
-                .style("fill", "#d9d9d9")
+                .style("fill", function(d) {return d.color})
                 .style("stroke", "#969696")
                 .style("stroke-width", "1px")
                 .attr("cx", function (d) { return d.x - 12; })
@@ -64,7 +66,13 @@ class Network extends Component {
             label
                 .attr("x", function (d) { return d.x - 18; })
                 .attr("y", function (d) { return d.y; })
-                .style("font-size", "20px").style("fill", "#4393c3");
+                .style("font-size", "20px");
+        }
+
+        function clicked(d) {
+            if (handleNodeClick !== undefined) {
+                handleNodeClick(d.name)
+            }
         }
 
     }

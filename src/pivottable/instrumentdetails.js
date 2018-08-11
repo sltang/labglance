@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import BaseTable from './basetable'
 import Network from './network'
+import { COLORS } from './piechart'
 
 const columnNames=[ {id :'property', label:'Property'}, {id :'value', label:'Value'}]
 const excludedFields = ['timezoneoffsetatorigin', 'additionalinfo', 'driverversion', 'sessionid', 'timezonenameatorigin', 'manufacturer']
@@ -33,6 +34,14 @@ class InstrumentDetails extends Component {
        
     }
 
+    handleNodeClick = (name) => {
+        const { history:{push}} = this.props
+        const { controller } = this.state
+        if (controller.toUpperCase() === name.toUpperCase()) {
+            push('/computer-details/'+name.toUpperCase())
+        }
+    }
+
     componentDidMount() {
         const {match} = this.props
         let instrumentName = match.params.name
@@ -46,7 +55,6 @@ class InstrumentDetails extends Component {
         let instrument = instruments.filter(inst => inst.name === instrumentName)
         if (instrument.length > 0) {
             let inst = instrument[0]
-            //console.log(inst)
             let data = []
             Object.keys(inst).filter(key => excludedFields.indexOf(key) === -1).forEach(key => {
                 let datum = {}
@@ -62,7 +70,7 @@ class InstrumentDetails extends Component {
                 }
             })
             const graph = this.getGraph(inst) 
-            this.setState({data:data, graph:graph})
+            this.setState({data:data, graph:graph, controller:inst.controller})
         } 
         let title = 'Instrument: ' + instrumentName
         this.setState({title: title})        
@@ -87,11 +95,11 @@ class InstrumentDetails extends Component {
     getGraph = (instrument) => {
         let nodes = []
         let links = []
-        nodes.push({id: '1', group: '1', name: instrument.name})
-        nodes.push({id: '2', group: '2', name: instrument.controller })
-        links.push({source: '1', target:'2', value:50})   //value - link thickness
+        nodes.push({id: '1', group: '1', name: instrument.name, color: COLORS[3]})
+        nodes.push({id: '2', group: '1', name: instrument.controller, color: COLORS[1] })
+        links.push({source: '1', target:'2', value:10})   //value - link thickness
         instrument.modules.forEach((m, index) => {
-            nodes.push({id:index+3, group:'3', name:m.Properties.name})
+            nodes.push({id:index+3, group:'1', name:m.Properties.name, color: COLORS[0]})
             links.push({source: index+3, target:'1', value:10})
         })    
         const graph = {nodes:nodes, links:links}
@@ -106,7 +114,7 @@ class InstrumentDetails extends Component {
                 <div className={classes.container}>
                     <div>{title}</div>
                     <Fragment>
-                        <Network width={450} height={350} graph={graph}/>
+                        <Network width={450} height={350} graph={graph} handleNodeClick={this.handleNodeClick}/>
                         <BaseTable zoom={'in'} columnNames={columnNames} data={data} handleRowClick={this.handleRowClick} cellWidths={instrumentTableCellWidths} refresh={true}
                     /></Fragment>
                 </div>
