@@ -9,7 +9,13 @@ const cellWidths = {
 
 class SoftwareTable extends Component {
 
-    handleRowClick = (e, name) => {
+    constructor(props) {
+        super(props);
+        this.state = {};
+        this.handleRowClick = this.handleRowClick.bind(this)
+    }
+
+    handleRowClick(e, name) {
     }
 
     render() {

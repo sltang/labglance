@@ -40,13 +40,18 @@ class BaseTable extends Component {
             order: 'asc',
             orderBy: ''
         };
+        this.handleRefresh = this.handleRefresh.bind(this)
+        this.handleRequestSort = this.handleRequestSort.bind(this)
+        this.setHeadCellWidth = this.setHeadCellWidth.bind(this)
+        this.setBodyCellWidth = this.setBodyCellWidth.bind(this)
+        this.getSorting = this.getSorting.bind(this)
     }
 
     componentDidMount() {
         this.setState({ originalData: this.props.data.slice(0) })
     }
 
-    handleRequestSort = (event, property) => {
+    handleRequestSort(event, property) {
         const orderBy = property;
         let order = 'desc';
 
@@ -57,7 +62,7 @@ class BaseTable extends Component {
         this.setState({ order, orderBy });
     };
 
-    getSorting = (order, orderBy) => {
+    getSorting(order, orderBy) {
         return order === 'desc'
             ? (a, b) => {
                 if (b[orderBy] < a[orderBy]) return -1
@@ -71,25 +76,29 @@ class BaseTable extends Component {
             }
     }
 
-    setHeadCellWidth = (index) => {
+    setHeadCellWidth(index) {
         const { zoom, cellWidths } = this.props
-        return { width: cellWidths.head[zoom][index] }
+        if (cellWidths !== undefined && zoom !== undefined) {
+            return { width: cellWidths.head[zoom][index] }
+        } 
+        return { width:'100%'}
     }
 
-    setBodyCellWidth = (index) => {
+    setBodyCellWidth(index) {
         const { zoom, cellWidths } = this.props
-        return { width: cellWidths.body[zoom][index] }
+        if (cellWidths !== undefined && zoom !== undefined) {
+            return { width: cellWidths.body[zoom][index] }
+        } 
+        return { width:'100%'}
     }
 
-    handleRefresh = (event) => {
+    handleRefresh(event) {
         this.setState({ orderBy: '' })
     }
-
 
     render() {
         const { classes, columnNames, data, handleRowClick, zoom, refresh } = this.props
         const keys = columnNames.map(col => col.id)
-        //console.log(data)
         const { order, originalData } = this.state
         let orderBy = this.state.orderBy
         if (this.props.orderBy) {

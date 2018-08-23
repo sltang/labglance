@@ -17,11 +17,15 @@ let machinePivotTable = []
 parse analytics.json
 */
 export const parseData = (raw) => {
-    raw = '[' + raw.replace(/(.*)\r\n/g, '$1,')
+    raw = '[' + raw.replace(/(.*)(\r\n|\n)/g, '$1,')
     raw = raw.replace(/(.*),$/, '$1')
     raw += ']'
-    let data = JSON.parse(raw);
-    return groupByCollection(data, "CollectionName")
+    try { 
+        let data = JSON.parse(raw);
+        return groupByCollection(data, "CollectionName")
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 export const getServers = (collections) => {
@@ -150,7 +154,7 @@ export const searchPC = (computers, keywords) => {
             if (key === 'drives') {
                 value.forEach(drv => {
                     Object.values(drv.Properties).forEach(v => {
-                        if (!v) return
+                        if (!v || match) return
                         if ((v.includes && v.toLowerCase().includes(lckeywords)) || (typeof v === 'number' && v.toString() === keywords)) {
                             pcs.push(computer)
                             match = true                      
@@ -160,7 +164,7 @@ export const searchPC = (computers, keywords) => {
             } else if (key === 'plugins') {
                 value.forEach(plugin => {
                     Object.values(plugin.Properties).forEach(v => {
-                        if (!v) return
+                        if (!v || match) return
                         if ((v.includes && v.toLowerCase().includes(lckeywords)) || (typeof v === 'number' && v.toString() === keywords)) {
                             pcs.push(computer)
                             match = true
@@ -198,14 +202,14 @@ export const searchInstruments = (collections, keywords) => {
             if (r1.timestampatorigin === r2.timestampatorigin) return 0;
             return r1.timestampatorigin < r2.timestampatorigin ? -1 : 1;
         })[0];
+        let match = false
         Object.keys(instrument).forEach(key => {
-            const value = instrument[key]
-            let match = false
+            const value = instrument[key]            
             if (value === null || match) return
             if (key === 'modules') {
                 value.forEach(mod => {
                     Object.values(mod.Properties).forEach(v => {
-                        if (!v) return
+                        if (!v || match) return
                         if ((v.includes && v.toLowerCase().includes(lckeywords)) || (typeof v === 'number' && v.toString() === keywords)) {
                             match = true
                             insts.push(instrument)                            
@@ -303,6 +307,10 @@ export const getMachinePivotTable = (collections) => {
 group array elements by property
 */
 function groupBy(objectArray, property) {
+    if (objectArray === undefined) {
+        console.error('objectArray is undefined')
+        return {}
+    }
     return objectArray.reduce(function (acc, obj) {
         if (obj.hasOwnProperty(property)) {
             var key = obj[property];
@@ -316,6 +324,10 @@ function groupBy(objectArray, property) {
 }
 
 function groupByCollection(objectArray, property) {
+    if (objectArray === undefined) {
+        console.error('objectArray is undefined')
+        return {}
+    }
     return objectArray.reduce(function (acc, obj) {
         if (obj.hasOwnProperty(property)) {
             var key = obj[property];

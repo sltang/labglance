@@ -26,9 +26,14 @@ const styles = theme => ({
 class AppBar extends Component {
 
     render() {
-        const { classes, handleLogout, gotoDevices, gotoTopology } = this.props
+        const { classes, handleLogout, gotoInstruments, gotoTopology } = this.props
         return (
             <div className={classes.appbar}>
+                <Tooltip title="Instrument Grid Viewer">
+                    <IconButton onClick={gotoInstruments} style={{ 'outline': 'none' }} >
+                        <DashBoardOutlinedIcon className={classes.icon} />
+                    </IconButton>
+                </Tooltip>
                 <Tooltip title="Topology Viewer">
                     <IconButton onClick={gotoTopology} style={{ 'outline': 'none' }} >
                         <DashBoardOutlinedIcon className={classes.icon} />

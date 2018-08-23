@@ -145,22 +145,25 @@ class Login extends Component {
         const { handleLogin } = this.props
         const { username, password, domain } = this.state;
 
-        axios.post('http://csteevesserver2:6625/olss/v1.0/login', {
-            username: username,
-            password: password
-        })
-            .then(((response) => {
-                //console.log(response.status);
-                //sessionStorage.setItem('token', response.data)
-                sessionStorage.setItem('token', '1234')
-                handleLogin(true)
-                //this.props.history.push('/main')
-                //push to dashboard
-            })(this))
-            .catch(((error) => {
-                //console.log(error);
-                this.setState({ errorMessage: 'Login failed. Please try again.' })
-            })(this));
+        sessionStorage.setItem('token', '1234')
+        handleLogin(true)
+
+        // axios.post('http://localhost:6625/olss/v1.0/login', {
+        //     username: username,
+        //     password: password
+        // })
+        //     .then(((response) => {
+        //         //console.log(response.status);
+        //         //sessionStorage.setItem('token', response.data)
+        //         sessionStorage.setItem('token', '1234')
+        //         handleLogin(true)
+        //         //this.props.history.push('/main')
+        //         //push to dashboard
+        //     })(this))
+        //     .catch(((error) => {
+        //         //console.log(error);
+        //         this.setState({ errorMessage: 'Login failed. Please try again.' })
+        //     })(this));
 
     }
 

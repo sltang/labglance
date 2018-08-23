@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import BaseTable from './basetable'
@@ -28,13 +29,17 @@ class InstrumentDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {};
+        this.handleRowClick = this.handleRowClick.bind(this)
+        this.handleNodeClick = this.handleNodeClick.bind(this)
+        this.getArrayData = this.getArrayData.bind(this)        
+        this.getGraph = this.getGraph.bind(this)
     }
 
-    handleRowClick = (e, name) => {
+    handleRowClick(e, name) {
        
     }
 
-    handleNodeClick = (name) => {
+    handleNodeClick(name) {
         const { history:{push}} = this.props
         const { controller } = this.state
         if (controller.toUpperCase() === name.toUpperCase()) {
@@ -76,7 +81,7 @@ class InstrumentDetails extends Component {
         this.setState({title: title})        
     }
 
-    getArrayData = (key, arr) => {
+    getArrayData(key, arr) {
         let arrayData = []
         arr.forEach(o => { 
             if (o.hasOwnProperty('Properties')) {        
@@ -92,7 +97,7 @@ class InstrumentDetails extends Component {
         return arrayData
     }
 
-    getGraph = (instrument) => {
+    getGraph(instrument) {
         let nodes = []
         let links = []
         nodes.push({id: '1', group: '1', name: instrument.name, color: COLORS[3]})
@@ -130,4 +135,4 @@ InstrumentDetails.propTypes = {
     classes: PropTypes.object.isRequired,
 }
 
-export default withStyles(styles)(InstrumentDetails)
+export default withStyles(styles)(withRouter(InstrumentDetails))

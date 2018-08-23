@@ -36,15 +36,20 @@ class ComputerDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {};
+        this.handleRowClick = this.handleRowClick.bind(this)
+        this.handleNodeClick = this.handleNodeClick.bind(this)
+        this.getArrayData = this.getArrayData.bind(this)
+        this.getInstruments = this.getInstruments.bind(this)
+        this.getServer = this.getServer.bind(this)
     }
 
-    handleRowClick = (e, name) => {
+    handleRowClick(e, name) {
        
     }
 
     componentDidMount() {
         const {match} = this.props
-        if (sessionStorage.getItem('topology-view-computers') === undefined) return
+        if (sessionStorage.getItem('topology-view-computers') === null) return
         let machinename = match.params.name
         if (machinename === undefined) return
         const computers = JSON.parse(sessionStorage.getItem('topology-view-computers'))
@@ -83,7 +88,7 @@ class ComputerDetails extends Component {
         this.setState({title: title, machinename:machinename})        
     }
 
-    getArrayData = (key, arr) => {
+    getArrayData(key, arr) {
         let arrayData = []
         arr.forEach(o => { 
             if (o.hasOwnProperty('Properties')) {        
@@ -99,7 +104,7 @@ class ComputerDetails extends Component {
         return arrayData
     }
 
-    getInstruments = (controllerName) => {
+    getInstruments(controllerName) {
         //is computer a controller?
         const instruments = sessionStorage.getItem('topology-view-instruments') === null? []: JSON.parse(sessionStorage.getItem('topology-view-instruments'))
         let instrus = []
@@ -120,7 +125,7 @@ class ComputerDetails extends Component {
         return {instruments:instrus, graph:graph}
     }
 
-    getServer = (name) => {
+    getServer(name) {
         const ss = sessionStorage.getItem('topology-view-servers') === null? []: JSON.parse(sessionStorage.getItem('topology-view-servers'))
         let server = []
         ss.filter(svr => svr.olsshostname === name).forEach(svr => {            
@@ -137,7 +142,7 @@ class ComputerDetails extends Component {
         return server
     }
 
-    handleNodeClick = (name) => {
+    handleNodeClick(name) {
         const { history:{push}} = this.props
         const { machinename } = this.state
         if (machinename !== name) {

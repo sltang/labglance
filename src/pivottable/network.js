@@ -21,13 +21,14 @@ class Network extends Component {
             .selectAll("line")
             .data(graph.links)
             .enter().append("line")
+            .attr("stroke", "#aaa")
             .attr("stroke-width", function (d) { return Math.sqrt(d.value); })
 
         var node = d3.select('.nodes')
             .selectAll("circle")
             .data(graph.nodes)
             .enter().append("circle")
-            .attr("r", 6)
+            .attr("r", 6)            
             .on("click", clicked)
 
         var label = d3.select('.labels')

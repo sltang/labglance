@@ -10,7 +10,14 @@ const cellWidths = {
 
 class InstrumentTable extends Component {
 
-    handleRowClick = (e, name) => {
+    constructor(props) {
+        super(props);
+        this.state = {};
+        this.handleRowClick = this.handleRowClick.bind(this)
+    }
+        
+
+    handleRowClick(e, name) {
         const { history: {push}} = this.props
         push('/instrument-details/'+name)
     }

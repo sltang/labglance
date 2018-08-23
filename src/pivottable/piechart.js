@@ -7,7 +7,7 @@ import { PieChart, Pie, Cell } from 'recharts';
 const styles = theme =>  ({
     container: {
         display: 'flex',        
-    }
+    },
 })
 
 export const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
@@ -18,10 +18,11 @@ class TopologyPieChart extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {};
+        this.renderCustomizedLabel = this.renderCustomizedLabel.bind(this)
     }
 
-    renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+    renderCustomizedLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) {
         const {data} = this.props
         const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
         const x = cx + radius * Math.cos(-midAngle * RADIAN);

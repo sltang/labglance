@@ -23,7 +23,7 @@ class MainLayout extends Component {
         push('/topology-view')
     }
 
-    gotoDevices = () => {
+    gotoInstruments = () => {
         const { history: {push} } = this.props;
         push('/dashboard')
     }
@@ -32,7 +32,7 @@ class MainLayout extends Component {
         const { classes, handleLogout } = this.props
         return (
             <div className={classes.root}>
-                <AppBar handleLogout={handleLogout} gotoTopology={this.gotoTopology} gotoDevices={this.gotoDevices}/>
+                <AppBar handleLogout={handleLogout} gotoTopology={this.gotoTopology} gotoInstruments={this.gotoInstruments}/>
                 <Switch>               
                     <Route exact path="/dashboard" component={InstrumentDashboard} />
                     <Route exact path="/topology-view" component={TopologyViewer} />

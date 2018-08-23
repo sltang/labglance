@@ -13,9 +13,10 @@ class ComputerTable extends Component {
     constructor(props) {
         super(props);
         this.state = {};
+        this.handleRowClick = this.handleRowClick.bind(this)
     }
 
-    handleRowClick = (e, name) => {
+    handleRowClick(e, name) {
         const { history: {push}} = this.props
         push('/computer-details/'+name)
     }
