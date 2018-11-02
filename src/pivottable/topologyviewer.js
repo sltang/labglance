@@ -106,7 +106,8 @@ class TopologyViewer extends Component {
         let reader = new FileReader();
         reader.readAsText(this.uploadInput.files[0]);
         reader.onload = () => {
-            let collections = dataService.parseData(reader.result)
+            let data = '[' + reader.result.split('\r\n').filter(line  => line !== '').join(',') + ']'
+            let collections = dataService.parseData(data)
             if (collections === undefined) {
                 this.setState({counts:[], error:'An exception occurred while parsing data'})
                 return
@@ -156,7 +157,7 @@ class TopologyViewer extends Component {
             sessionStorage.setItem('topology-view-computerTable', JSON.stringify(computerTable))
             sessionStorage.setItem('topology-view-software', JSON.stringify(software))
             sessionStorage.setItem('topology-view-instruments', JSON.stringify(instruments))
-            sessionStorage.setItem('topology-view-collections', JSON.stringify(collections))
+            //sessionStorage.setItem('topology-view-collections', JSON.stringify(collections))
             sessionStorage.setItem('topology-view-completeInstruments', JSON.stringify(completeInstruments))
 
         }

@@ -17,9 +17,6 @@ let machinePivotTable = []
 parse analytics.json
 */
 export const parseData = (raw) => {
-    raw = '[' + raw.replace(/(.*)(\r\n|\n)/g, '$1,')
-    raw = raw.replace(/(.*),$/, '$1')
-    raw += ']'
     try { 
         let data = JSON.parse(raw);
         return groupByCollection(data, "CollectionName")
